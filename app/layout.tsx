@@ -1,7 +1,9 @@
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
+import { Providers } from "@/components/Providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,15 +28,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen bg-background text-foreground">
-        <nav className="border-b px-6 py-3 flex gap-4">
-          <Link href="/" className="hover:underline">
-            Home
-          </Link>
-          <Link href="/tasks" className="hover:underline">
-            Tasks
-          </Link>
-        </nav>
-        {children}
+        <Providers>
+          <nav className="border-b px-6 py-3 flex gap-4">
+            <Link href="/" className="hover:underline">
+              Home
+            </Link>
+            <Link href="/tasks" className="hover:underline">
+              Tasks
+            </Link>
+          </nav>
+          {children}
+        </Providers>
       </body>
     </html>
   );

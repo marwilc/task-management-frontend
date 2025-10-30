@@ -42,7 +42,7 @@ export async function getTasks(): Promise<Task[]> {
   return readTasks();
 }
 
-export async function createTask(formData: FormData) {
+export async function createTask(formData: FormData){
   const title = String(formData.get("title") || "").trim();
   const due = String(formData.get("due") || "").trim(); // YYYY-MM-DD
   if (!title) return;
