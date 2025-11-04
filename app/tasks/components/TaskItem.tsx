@@ -5,6 +5,7 @@ import { Card, CardBody, Chip, DatePicker } from "@heroui/react";
 import { cycleStatus, deleteTask, setDueDate, Task } from "../actions";
 
 import { CalendarDate } from "@internationalized/date";
+import { Form } from "@heroui/form";
 
 function statusClass(s: Task["status"]) {
   //   const base = "text-xs rounded-full px-2 py-1 border";
@@ -85,9 +86,7 @@ export default function TaskItem({ task }: { task: Task }) {
 
           <div className="flex items-center gap-2 shrink-0">
             {/* Cambiar fecha */}
-            <form action={setDueDate} className="flex items-center gap-2">
-              <input type="hidden" name="id" value={task.id} />
-
+            <div className="flex flex-row items-center gap-2">
               <DatePicker
                 variant="bordered"
                 labelPlacement="outside"
@@ -97,24 +96,28 @@ export default function TaskItem({ task }: { task: Task }) {
                 id="due"
                 name="due"
               />
-              <Button variant="ghost">Save date</Button>
-            </form>
+              <Button
+                variant="ghost"
+                type="button"
+                onPress={() => setDueDate(task.id, task.due || "")}
+              >
+                Save date
+              </Button>
+            </div>
 
             {/* Avanzar estado */}
-            <form action={cycleStatus}>
-              <input type="hidden" name="id" value={task.id} />
-              <Button color="success" variant="ghost">
+            <div className="flex flex-row items-center gap-2">
+              <Button color="success" variant="ghost" type="button" onPress={() => cycleStatus(task.id)}>
                 Next
               </Button>
-            </form>
+            </div>
 
             {/* Eliminar */}
-            <form action={deleteTask}>
-              <input type="hidden" name="id" value={task.id} />
-              <Button color="danger" variant="ghost">
+            <div className="flex flex-row items-center gap-2">
+              <Button color="danger" variant="ghost" type="button" onPress={() => deleteTask(task.id)}>
                 Delete
               </Button>
-            </form>
+            </div>
           </div>
         </CardBody>
       </Card>

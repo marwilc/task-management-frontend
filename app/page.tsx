@@ -9,9 +9,7 @@ export default function Home() {
         <h1 className="text-4xl font-bold font-bold mb-4">
           Hola 👋, soy MIRI tu AI Assistant y te ayudare a gestionar tus tareas.
         </h1>
-        {/* <p className="text-lg text-muted-foreground">
-          Escribe algo y comienza a chatear conmigo
-        </p> */}
+
       </main>
     </div>
   );

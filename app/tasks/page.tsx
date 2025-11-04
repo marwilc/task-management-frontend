@@ -1,11 +1,8 @@
 import Button from "@/components/Button";
-import {
-  clearDone,
-  getTasks,
-  type Task
-} from "./actions";
+import { clearDone, getTasks, type Task } from "./actions";
 import CreateTask from "./components/CreateTask";
 import TaskItem from "./components/TaskItem";
+import DigestSummary from "./components/DigestSummary";
 
 export const metadata = { title: "Tasks" };
 
@@ -29,6 +26,8 @@ export default async function TasksPage() {
 
   return (
     <main className="mx-auto max-w-3xl p-6 space-y-4">
+      <DigestSummary tasks={tasks} />
+
       <header className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Tasks</h1>
         <form action={clearDone}>

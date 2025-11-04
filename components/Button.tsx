@@ -12,6 +12,8 @@ export default function Button({
   type = "submit",
   radius = "md",
   isLoading = false,
+  onPress,
+  isDisabled = false,
 }: {
   children: React.ReactNode;
   className?: string;
@@ -22,6 +24,8 @@ export default function Button({
   type?: "button" | "submit" | "reset" | undefined;
   radius?: "none" | "sm" | "md" | "lg" | "full" | undefined;
   isLoading?: boolean;
+  onPress?: () => void;
+  isDisabled?: boolean;
 }) {
   const { pending} = useFormStatus();
   return (  
@@ -35,6 +39,8 @@ export default function Button({
       className={className}
       radius={radius}
       isLoading={isLoading}
+      onPress={onPress}
+      isDisabled={isDisabled}
     >
       {pending ? pendingLabel : children}
     </HeroButton>

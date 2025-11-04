@@ -57,8 +57,7 @@ export async function createTask(formData: FormData){
   await writeTasks([newTask, ...tasks]);
 }
 
-export async function cycleStatus(formData: FormData) {
-  const id = String(formData.get("id") || "");
+export async function cycleStatus(id: string) {
   const tasks = await readTasks();
   const idx = tasks.findIndex((t) => t.id === id);
   if (idx === -1) return;
@@ -71,15 +70,11 @@ export async function cycleStatus(formData: FormData) {
   writeTasks(tasks);
 }
 
-// ...código existente arriba
 
-export async function deleteTask(formData: FormData) {
-  const id = String(formData.get("id") || "");
-  if (!id) return;
-
+export async function deleteTask(id: string) {
   const tasks = await readTasks();
   const next = tasks.filter((t) => t.id !== id);
-  writeTasks(next);
+  await writeTasks(next);
 }
 
 // (Opcional) borrar todas las completadas
@@ -88,12 +83,10 @@ export async function clearDone() {
   writeTasks(tasks.filter((t) => t.status !== "DONE"));
 }
 
-export async function setDueDate(formData: FormData) {
-  const id = String(formData.get("id") || "");
-  const due = String(formData.get("due") || "").trim(); // YYYY-MM-DD
+export async function setDueDate(id: string, due: string ) {
   const tasks = await readTasks();
   const idx = tasks.findIndex((t) => t.id === id);
-  if (idx === -1) return;
+  if (idx === -1) return;  
   tasks[idx] = { ...tasks[idx], due: due || null };
-  writeTasks(tasks);
+  await writeTasks(tasks);
 }
