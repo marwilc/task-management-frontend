@@ -1,5 +1,12 @@
 "use client";
 import { Input as HeroInput } from "@heroui/input";
+import type { ComponentProps } from "react";
+
+type HeroInputProps = ComponentProps<typeof HeroInput>;
+
+type InputProps = HeroInputProps & {
+  className?: string;
+};
 
 export default function Input({
   id = "",
@@ -13,31 +20,8 @@ export default function Input({
   type = "text",
   isRequired = false,
   defaultValue = "",
-}: {
-  id?: string;
-  name?: string;
-  className?: string;
-  label?: string;
-  placeholder?: string;
-  labelPlacement?: "outside" | "inside" | undefined;
-  variant?: "flat" | "bordered" | "faded" | "underlined" | undefined;
-  radius?: "none" | "sm" | "md" | "lg" | "full" | undefined;
-  type?:
-    | "text"
-    | "email"
-    | "password"
-    | "number"
-    | "date"
-    | "time"
-    | "datetime-local"
-    | "search"
-    | "tel"
-    | "url"
-    | "textarea"
-    | undefined;
-  isRequired?: boolean;
-  defaultValue?: string;
-}) {
+  ...rest
+}: InputProps) {
   return (
     <HeroInput
       id={id}
@@ -51,6 +35,7 @@ export default function Input({
       type={type}
       isRequired={isRequired}
       defaultValue={defaultValue}
+      {...rest}
     />
   );
 }

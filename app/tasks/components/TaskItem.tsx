@@ -2,10 +2,8 @@
 "use client";
 import Button from "@/components/Button";
 import { Card, CardBody, Chip, DatePicker } from "@heroui/react";
-import { cycleStatus, deleteTask, setDueDate, Task } from "../actions";
-
 import { CalendarDate } from "@internationalized/date";
-import { Form } from "@heroui/form";
+import { Task } from "../types/task-type";
 
 function statusClass(s: Task["status"]) {
   //   const base = "text-xs rounded-full px-2 py-1 border";
@@ -15,12 +13,14 @@ function statusClass(s: Task["status"]) {
 }
 
 function getDateValue(d?: string | null) {
-  const date = new CalendarDate(
-    Number(d?.split("-")[0]),
-    Number(d?.split("-")[1]),
-    Number(d?.split("-")[2])
+  if (!d) return null;
+  const parsed = parseDate(d);
+  if (!parsed) return null;
+  return new CalendarDate(
+    parsed.getUTCFullYear(),
+    parsed.getUTCMonth() + 1,
+    parsed.getUTCDate()
   );
-  return date;
 }
 
 function parseDate(d?: string | null) {
@@ -64,7 +64,19 @@ function dueBadgeClass(d?: string | null) {
   return `primary`;
 }
 
-export default function TaskItem({ task }: { task: Task }) {
+type TaskItemProps = {
+  task: Task;
+  onCycleStatus: (id: string) => Promise<void>;
+  onSetDueDate: (id: string, due: string) => Promise<void>;
+  onRemoveTask: (id: string) => Promise<void>;
+};
+
+export default function TaskItem({
+  task,
+  onCycleStatus,
+  onSetDueDate,
+  onRemoveTask,
+}: TaskItemProps) {
   return (
     <li
       key={task.id}
@@ -78,8 +90,8 @@ export default function TaskItem({ task }: { task: Task }) {
               <Chip color={statusClass(task.status)} variant="flat">
                 {task.status.replace("_", " ")}
               </Chip>
-              <Chip color={dueBadgeClass(task.due)} variant="flat">
-                {dueLabel(task.due)}
+              <Chip color={dueBadgeClass(task.date)} variant="flat">
+                {dueLabel(task.date)}
               </Chip>
             </div>
           </div>
@@ -92,29 +104,43 @@ export default function TaskItem({ task }: { task: Task }) {
                 labelPlacement="outside"
                 radius="sm"
                 className="max-w-[284px] py-2"
-                value={task.due ? getDateValue(task.due) : null}
-                id="due"
-                name="due"
+                value={task.date ? getDateValue(task.date) : null}
+                id="date"
+                name="date"
+                onChange={(date) => {
+                  const value = date ? date.toString() : "";
+                  onSetDueDate(task.id, value);
+                }}
               />
-              <Button
+              {/* <Button
                 variant="ghost"
                 type="button"
-                onPress={() => setDueDate(task.id, task.due || "")}
+                onPress={() => setDueDate(task.id, task.date || "")}
               >
                 Save date
-              </Button>
+              </Button> */}
             </div>
 
             {/* Avanzar estado */}
             <div className="flex flex-row items-center gap-2">
-              <Button color="success" variant="ghost" type="button" onPress={() => cycleStatus(task.id)}>
+              <Button
+                color="success"
+                variant="ghost"
+                type="button"
+                onPress={() => onCycleStatus(task.id)}
+              >
                 Next
               </Button>
             </div>
 
             {/* Eliminar */}
             <div className="flex flex-row items-center gap-2">
-              <Button color="danger" variant="ghost" type="button" onPress={() => deleteTask(task.id)}>
+              <Button
+                color="danger"
+                variant="ghost"
+                type="button"
+                onPress={() => onRemoveTask(task.id)}
+              >
                 Delete
               </Button>
             </div>

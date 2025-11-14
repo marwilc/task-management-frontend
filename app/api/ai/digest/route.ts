@@ -1,3 +1,4 @@
+import { Task } from "@/app/tasks/types/task-type";
 import { NextRequest } from "next/server";
 import OpenAI from "openai";
 import { ChatCompletionMessageParam } from "openai/resources";
@@ -6,13 +7,16 @@ export const runtime = "edge"; // rápido para IA
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-function parseTasks(
-  body: unknown
-): { title: string; status: string; due?: string | null }[] {
+function parseTasks(body: unknown): Task[] {
   if (!Array.isArray(body)) return [];
   return body
     .filter((t) => typeof t?.title === "string")
-    .map((t) => ({ title: t.title, status: t.status, due: t.due ?? null }));
+    .map((t) => ({
+      id: t.id,
+      title: t.title,
+      status: t.status,
+      date: t.date ?? null,
+    }));
 }
 
 export async function POST(req: NextRequest) {
@@ -37,7 +41,7 @@ ${tasks
       `Tarea ${i + 1}:
   Título: ${t.title}
   Estado: ${t.status}
-  Fecha límite: ${t.due ?? "Sin fecha"}`
+  Fecha límite: ${t.date ?? "Sin fecha"}`
   )
   .join("\n\n")}
 

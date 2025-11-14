@@ -1,15 +1,11 @@
 "use server";
 
 import { cookies } from "next/headers";
+import { Task } from "./types/task-type";
 
 const COOKIE = "tm_tasks_v1";
 
-export type Task = {
-  id: string;
-  title: string;
-  status: "TODO" | "IN_PROGRESS" | "DONE";
-  due?: string | null;
-};
+
 
 async function readTasks(): Promise<Task[]> {
   const raw = (await cookies()).get(COOKIE)?.value;
@@ -44,7 +40,7 @@ export async function getTasks(): Promise<Task[]> {
 
 export async function createTask(formData: FormData){
   const title = String(formData.get("title") || "").trim();
-  const due = String(formData.get("due") || "").trim(); // YYYY-MM-DD
+  const date = String(formData.get("date") || "").trim(); // YYYY-MM-DD
   if (!title) return;
 
   const tasks = await readTasks();
@@ -52,7 +48,7 @@ export async function createTask(formData: FormData){
     id: crypto.randomUUID(),
     title,
     status: "TODO",
-    due: due || null,
+    date: date || null,
   };
   await writeTasks([newTask, ...tasks]);
 }
@@ -83,10 +79,10 @@ export async function clearDone() {
   writeTasks(tasks.filter((t) => t.status !== "DONE"));
 }
 
-export async function setDueDate(id: string, due: string ) {
+export async function setDueDate(id: string, date: string ) {
   const tasks = await readTasks();
   const idx = tasks.findIndex((t) => t.id === id);
   if (idx === -1) return;  
-  tasks[idx] = { ...tasks[idx], due: due || null };
+  tasks[idx] = { ...tasks[idx], date: date || null };
   await writeTasks(tasks);
 }

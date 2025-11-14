@@ -2,21 +2,17 @@
 import { useState } from "react";
 import { Card, CardBody } from "@heroui/card";
 import Button from "@/components/Button";
+import { useTasks } from "../hooks/useTasks";
+import { Task } from "../types/task-type";
 
-type Task = {
-  id: string;
-  title: string;
-  status: string;
-  due?: string | null;
-};
-
-export default function DigestSummary({ tasks }: { tasks: Task[] }) {
+export default function DigestSummary() {
+  const { tasks, generateSummary } = useTasks();
   const [summary, setSummary] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const relevantTasks = tasks.filter((t) => {
-    if (!t.due) return false;
-    const date = new Date(t.due);
+  const relevantTasks = tasks.filter((t: Task) => {
+    if (!t.date) return false;
+    const date = new Date(t.date);
     const now = new Date();
     const diff = Math.floor(
       (date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
@@ -27,12 +23,8 @@ export default function DigestSummary({ tasks }: { tasks: Task[] }) {
   const handleDigest = async () => {
     setLoading(true);
     setSummary(null);
-    const res = await fetch("/api/ai/digest", {
-      method: "POST",
-      body: JSON.stringify({ tasks: relevantTasks }),
-    });
-    const data = await res.json();
-    setSummary(data.summary || "Sin resumen.");
+    const summary = await generateSummary(relevantTasks);
+    setSummary(summary || "Sin resumen.");
     setLoading(false);
   };
 
