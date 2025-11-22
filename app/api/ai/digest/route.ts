@@ -8,7 +8,6 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 function parseTasks(body: unknown): Task[] {
   if (!Array.isArray(body)) return [];
   return body
