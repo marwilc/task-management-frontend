@@ -1,8 +1,12 @@
 import { Task } from "@/app/tasks/types/task-type";
 import { NextRequest } from "next/server";
 import { ChatCompletionMessageParam } from "openai/resources";
+import OpenAI from "openai";
 
-export const runtime = "edge"; // rápido para IA
+// OpenAI SDK requires Node.js runtime, not edge
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 function parseTasks(body: unknown): Task[] {
@@ -18,6 +22,15 @@ function parseTasks(body: unknown): Task[] {
 }
 
 export async function POST(req: NextRequest) {
+  const apiKey = process.env.OPENAI_API_KEY;
+  
+  if (!apiKey) {
+    return new Response(
+      JSON.stringify({ error: "OpenAI API key not configured" }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
+  }
+
   const body = await req.json();
   const tasks = parseTasks(body.tasks);
 
