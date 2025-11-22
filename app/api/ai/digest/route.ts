@@ -1,12 +1,10 @@
 import { Task } from "@/app/tasks/types/task-type";
 import { NextRequest } from "next/server";
-import OpenAI from "openai";
 import { ChatCompletionMessageParam } from "openai/resources";
 
 export const runtime = "edge"; // rápido para IA
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
 function parseTasks(body: unknown): Task[] {
   if (!Array.isArray(body)) return [];
   return body
