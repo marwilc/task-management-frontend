@@ -1,9 +1,8 @@
 import { ChatCompletionMessageParam } from "openai/resources";
 import { Task } from "../types/task-type";
-import { API_URL } from "@/env.local";
-
+import { ENV } from "@/env.local";
 // features/tasks/api/task-api.ts
-const BASE_URL = `${API_URL}/tasks`;
+const BASE_URL = `${ENV.API_URL}/tasks`;
 
 export async function getTasks() {
   const res = await fetch(BASE_URL, { cache: "no-store" });
@@ -56,7 +55,7 @@ export async function cycleStatusApi(id: string) {
 }
 
 export async function fetchSuggestion(messages: ChatCompletionMessageParam[]) {
-  const res = await fetch(`${API_URL}/suggestions`, {
+  const res = await fetch(`${ENV.API_URL}/suggestions`, {
     method: "POST",
     body: JSON.stringify({ messages }),
     headers: {
